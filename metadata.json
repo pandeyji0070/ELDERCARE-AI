@@ -1,0 +1,8 @@
+{
+  "name": "ELDERCARE AI",
+  "description": "Mobile-first elderly care, medication scheduling, adherence analytics, doctor appointment tracking, and Gemini AI health routine assistant.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -1,0 +1,759 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Private user account profile and active dashboard role preference.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "minLength": 3,
+          "maxLength": 160
+        },
+        "activeRole": {
+          "type": "string",
+          "enum": ["elderly", "caretaker", "family"]
+        },
+        "defaultCircleId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "displayName", "email", "activeRole", "createdAt", "updatedAt"]
+    },
+    "CareCircle": {
+      "title": "CareCircle",
+      "description": "Primary elderly care profile and alert configuration.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "elderName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "elderAge": {
+          "type": "integer"
+        },
+        "elderPhone": {
+          "type": "string",
+          "maxLength": 32
+        },
+        "bloodType": {
+          "type": "string",
+          "maxLength": 16
+        },
+        "allergies": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "emergencyContactName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "emergencyContactPhone": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 32
+        },
+        "notificationEmail": {
+          "type": "string",
+          "maxLength": 160
+        },
+        "emailAlertsEnabled": {
+          "type": "boolean"
+        },
+        "missedDoseThresholdMinutes": {
+          "type": "integer"
+        },
+        "memberUids": {
+          "type": "array",
+          "description": "Bounded list (max 10) of authorized member UIDs for secure list queries."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "ownerId",
+        "elderName",
+        "elderAge",
+        "emergencyContactName",
+        "emergencyContactPhone",
+        "emailAlertsEnabled",
+        "missedDoseThresholdMinutes",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "CircleMember": {
+      "title": "CircleMember",
+      "description": "Authorized member within a care circle.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "circleId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "role": {
+          "type": "string",
+          "enum": ["elderly", "caretaker", "family"]
+        },
+        "addedBy": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "inviteCode": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "circleId", "ownerId", "displayName", "role", "addedBy", "createdAt", "updatedAt"]
+    },
+    "Medication": {
+      "title": "Medication",
+      "description": "Scheduled medication item with dosage, timing, and refill count.",
+      "type": "object",
+      "properties": {
+        "circleId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "dosage": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "scheduleTime": {
+          "type": "string",
+          "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "minLength": 5,
+          "maxLength": 5
+        },
+        "timeSlot": {
+          "type": "string",
+          "enum": ["morning", "afternoon", "evening", "night"]
+        },
+        "withFood": {
+          "type": "boolean"
+        },
+        "instructions": {
+          "type": "string",
+          "maxLength": 250
+        },
+        "stockCount": {
+          "type": "integer"
+        },
+        "active": {
+          "type": "boolean"
+        },
+        "createdBy": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "memberUids": {
+          "type": "array"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "circleId",
+        "ownerId",
+        "name",
+        "dosage",
+        "scheduleTime",
+        "timeSlot",
+        "withFood",
+        "stockCount",
+        "active",
+        "createdBy",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "DoseLog": {
+      "title": "DoseLog",
+      "description": "Recorded dose adherence log for a specific date and medication.",
+      "type": "object",
+      "properties": {
+        "circleId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "medicationId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "medicationName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "dosage": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "scheduledDate": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "minLength": 10,
+          "maxLength": 10
+        },
+        "scheduledTime": {
+          "type": "string",
+          "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "minLength": 5,
+          "maxLength": 5
+        },
+        "timeSlot": {
+          "type": "string",
+          "enum": ["morning", "afternoon", "evening", "night"]
+        },
+        "status": {
+          "type": "string",
+          "enum": ["taken", "missed", "skipped", "pending"]
+        },
+        "takenAtIso": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "loggedBy": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 250
+        },
+        "alertAcknowledged": {
+          "type": "boolean"
+        },
+        "memberUids": {
+          "type": "array"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "circleId",
+        "ownerId",
+        "medicationId",
+        "medicationName",
+        "dosage",
+        "scheduledDate",
+        "scheduledTime",
+        "timeSlot",
+        "status",
+        "loggedBy",
+        "alertAcknowledged",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Appointment": {
+      "title": "Appointment",
+      "description": "Doctor appointment schedule and clinical notes.",
+      "type": "object",
+      "properties": {
+        "circleId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "doctorName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "specialty": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "clinicName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "appointmentDate": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "minLength": 10,
+          "maxLength": 10
+        },
+        "appointmentTime": {
+          "type": "string",
+          "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "minLength": 5,
+          "maxLength": 5
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "status": {
+          "type": "string",
+          "enum": ["upcoming", "completed", "cancelled"]
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "memberUids": {
+          "type": "array"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "circleId",
+        "ownerId",
+        "doctorName",
+        "specialty",
+        "clinicName",
+        "appointmentDate",
+        "appointmentTime",
+        "purpose",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "SosEvent": {
+      "title": "SosEvent",
+      "description": "Demo-only SOS alert event with mandatory confirmation flag.",
+      "type": "object",
+      "properties": {
+        "circleId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "triggeredByUid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "triggeredByName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active_demo", "acknowledged", "resolved"]
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 250
+        },
+        "demoOnlyConfirmed": {
+          "type": "boolean"
+        },
+        "acknowledgedBy": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "memberUids": {
+          "type": "array"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "circleId",
+        "ownerId",
+        "triggeredByUid",
+        "triggeredByName",
+        "status",
+        "demoOnlyConfirmed",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "NotificationLog": {
+      "title": "NotificationLog",
+      "description": "Audit log of email notification checks and SMTP dispatch attempts.",
+      "type": "object",
+      "properties": {
+        "circleId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "recipientEmail": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 160
+        },
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "eventType": {
+          "type": "string",
+          "enum": ["missed_dose", "sos_demo", "appointment_reminder", "test_setup"]
+        },
+        "deliveryStatus": {
+          "type": "string",
+          "enum": ["smtp_sent", "logged_unconfigured_smtp", "failed"]
+        },
+        "detail": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "memberUids": {
+          "type": "array"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "circleId",
+        "ownerId",
+        "recipientEmail",
+        "subject",
+        "eventType",
+        "deliveryStatus",
+        "detail",
+        "createdAt"
+      ]
+    },
+    "AiRoutine": {
+      "title": "AiRoutine",
+      "description": "Gemini-generated daily health and medication routine plan.",
+      "type": "object",
+      "properties": {
+        "circleId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "promptFocus": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "morningPlan": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1200
+        },
+        "afternoonPlan": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1200
+        },
+        "eveningPlan": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1200
+        },
+        "safetyTip": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 600
+        },
+        "createdBy": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "memberUids": {
+          "type": "array"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "circleId",
+        "ownerId",
+        "promptFocus",
+        "summary",
+        "morningPlan",
+        "afternoonPlan",
+        "eveningPlan",
+        "safetyTip",
+        "createdBy",
+        "createdAt"
+      ]
+    },
+    "CircleInvite": {
+      "title": "CircleInvite",
+      "description": "Single-use invite code allowing a verified Google user to join an existing Care Circle with an assigned role.",
+      "type": "object",
+      "properties": {
+        "inviteCode": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "circleId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "elderName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "invitedRole": {
+          "type": "string",
+          "enum": ["elderly", "caretaker", "family"]
+        },
+        "invitedEmail": {
+          "type": "string",
+          "maxLength": 160
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "accepted", "revoked"]
+        },
+        "createdBy": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "acceptedByUid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "acceptedByEmail": {
+          "type": "string",
+          "maxLength": 160
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "inviteCode",
+        "circleId",
+        "ownerId",
+        "elderName",
+        "invitedRole",
+        "status",
+        "createdBy",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Owner-only user profile with PII email and active dashboard view preference."
+    },
+    "/careCircles/{circleId}": {
+      "schema": { "$ref": "#/entities/CareCircle" },
+      "description": "Master Gate care circle document for an elderly resident."
+    },
+    "/careCircles/{circleId}/members/{memberUid}": {
+      "schema": { "$ref": "#/entities/CircleMember" },
+      "description": "Authorized care circle members and assigned roles."
+    },
+    "/careCircles/{circleId}/medications/{medId}": {
+      "schema": { "$ref": "#/entities/Medication" },
+      "description": "Medication schedules and refill counts."
+    },
+    "/careCircles/{circleId}/doseLogs/{logId}": {
+      "schema": { "$ref": "#/entities/DoseLog" },
+      "description": "Daily medication adherence logs."
+    },
+    "/careCircles/{circleId}/appointments/{apptId}": {
+      "schema": { "$ref": "#/entities/Appointment" },
+      "description": "Doctor appointments and visit notes."
+    },
+    "/careCircles/{circleId}/sosEvents/{sosId}": {
+      "schema": { "$ref": "#/entities/SosEvent" },
+      "description": "Confirmed demo-only SOS events."
+    },
+    "/careCircles/{circleId}/notificationLogs/{logId}": {
+      "schema": { "$ref": "#/entities/NotificationLog" },
+      "description": "Immutable log of email notification checks and SMTP dispatch attempts."
+    },
+    "/careCircles/{circleId}/aiRoutines/{routineId}": {
+      "schema": { "$ref": "#/entities/AiRoutine" },
+      "description": "Saved Gemini AI health routine plans."
+    },
+    "/circleInvites/{inviteCode}": {
+      "schema": { "$ref": "#/entities/CircleInvite" },
+      "description": "Invite records authorizing a verified user to join a Care Circle with a fixed role."
+    }
+  }
+}
